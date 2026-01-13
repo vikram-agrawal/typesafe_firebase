@@ -1,7 +1,18 @@
-// GENERATED CODE - DO NOT MODIFY
 import "package:typesafe_firebase/functions/base_model.dart";
 import "package:typesafe_firebase/functions/common_models.dart";
 
+/// Registers the core data transfer objects (DTOs) with the [BaseModel] registry.
+///
+/// This function initializes serialization and deserialization logic for common
+/// types used across the application. It maps the generated JSON serialization
+/// functions (`toJson` and `fromJson`) to their respective types:
+///
+/// * [VoidData]: Used for operations that return no content.
+/// * [IntData]: Used for operations returning a single integer value.
+/// * [StringData]: Used for operations returning a single string value.
+///
+/// This registration must be called during the application startup sequence,
+/// typically before any network requests or data persistence operations occur.
 void registerCommonModels() {
   BaseModel.register<VoidData>(
     toJson: _$VoidDataToJson,

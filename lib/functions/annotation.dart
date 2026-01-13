@@ -6,11 +6,21 @@ import 'package:meta/meta_meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:path/path.dart' as p;
 
+/// An annotation used to mark a class for automated [BaseModel] registration
+/// and JSON serialization.
+///
+/// Classes annotated with [@Model] will have serialization logic generated
+/// and will be included in the aggregate `registerAllModels()` function.
 @Target({TargetKind.classType})
 class Model extends JsonSerializable {
   const Model() : super(anyMap: true, explicitToJson: true);
 }
 
+/// A generator that produces registration snippets and serialization aliases
+/// for classes annotated with [Model].
+///
+/// This generator produces `.g.part` files containing metadata that the
+/// [RegistrationBuilder] later collects to build the final registration file.
 class ModelGenerator extends GeneratorForAnnotation<Model> {
   @override
   String generateForAnnotatedElement(
@@ -40,6 +50,12 @@ const ${name}ToJson = _\$${name}ToJson;
   }
 }
 
+/// A builder that aggregates all generated model snippets into a single
+/// registration file.
+///
+/// It scans for files matching [inputPattern], extracts import paths and
+/// registration statements, and generates a unified `registerAllModels()`
+/// function at [outputPath].
 class RegistrationBuilder implements Builder {
   final String inputPattern;
   final String outputPath;
@@ -107,13 +123,3 @@ class RegistrationBuilder implements Builder {
     );
   }
 }
-
-// class UserProfileExtension {
-//   // ignore: unused_field
-//   static final _converter = () {
-//     BaseModel.register<UserProfile>(
-//       toJson: _$UserProfileToJson,
-//       fromJson: _$UserProfileFromJson,
-//     );
-//   }();
-// }

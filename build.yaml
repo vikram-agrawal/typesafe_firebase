@@ -36,7 +36,7 @@ targets:
         enabled: true
         options:
           input_pattern: "example/**.model_builder.g.part"
-          output_path: "example/generated/models.g.dart"
+          output_path: "example/models.g.dart"
       mockito|mockBuilder:
         generate_for:
           - test/**_test.dart 

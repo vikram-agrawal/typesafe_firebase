@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'functions_example.dart';
+part of 'typesafe_firebase_example.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -16,7 +16,7 @@ Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
 // ModelGenerator
 // **************************************************************************
 
-//IMPORT: example/functions_example.dart
+//IMPORT: example/typesafe_firebase_example.dart
 //==BaseModel.register<UserProfile>(
 //==  toJson: UserProfileToJson,
 //==  fromJson: UserProfileFromJson,

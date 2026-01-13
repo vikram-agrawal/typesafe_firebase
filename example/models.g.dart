@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY
 import "package:typesafe_firebase/typesafe_firebase.dart";
-import "../functions_example.dart";
+import "typesafe_firebase_example.dart";
 
 void registerAllModels() {
   BaseModel.register<UserProfile>(

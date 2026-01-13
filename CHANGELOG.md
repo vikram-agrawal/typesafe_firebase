@@ -1,3 +1,7 @@
+## 0.0.2
+
+Adding comments and examples.
+
 ## 0.0.1
 
-* TODO: Describe initial release.
+Initial release with defining functions with authentication and models.

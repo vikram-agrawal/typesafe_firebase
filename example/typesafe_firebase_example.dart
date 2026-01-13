@@ -5,9 +5,9 @@ import 'package:typesafe_firebase/functions/common_models.dart';
 import 'package:typesafe_firebase/functions/firebase_functions.dart';
 import 'package:typesafe_firebase/functions/register_models.dart';
 
-import 'generated/models.g.dart';
+import 'models.g.dart';
 
-part 'functions_example.g.dart';
+part 'typesafe_firebase_example.g.dart';
 
 @Model()
 class UserProfile extends BaseModel {
@@ -15,7 +15,7 @@ class UserProfile extends BaseModel {
 }
 
 class ClientApi extends FirebaseFunctionsService {
-  ClientApi() : super(prefix: "/user");
+  ClientApi() : super(prefix: "user");
 
   // Will call /user/load firebase function.
   late final loadUser = createFunction<IntData, UserProfile>("/load");
@@ -26,7 +26,7 @@ class Run {
     FirebaseProvider.setConfig(region: "asia-south1");
     registerCommonModels();
     registerAllModels();
-    UserProfile result = await ClientApi().loadUser(IntData());
-    result.uid;
+    UserProfile result = await ClientApi().loadUser(IntData(5));
+    print(result.uid);
   }
 }
