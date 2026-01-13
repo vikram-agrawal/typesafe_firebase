@@ -5,6 +5,12 @@ builders:
     build_extensions: {".dart": [".model_builder.g.part"]}
     auto_apply: dependents
     build_to: cache
+  schema_builder:
+    import: "package:typesafe_firebase/firestore/builder.dart"
+    builder_factories: ["schemaBuilder"]
+    build_extensions: {".dart": [".schema_builder.g.part"]}
+    auto_apply: dependents
+    build_to: cache
   registration_builder:
     import: "package:typesafe_firebase/functions/builder.dart"
     builder_factories: ["registrationBuilder"]
@@ -29,14 +35,19 @@ targets:
       json_serializable:
         generate_for:
           - example/**.dart
+          - test/**.dart
       typesafe_firebase:model_builder:
         generate_for:
           - example/**.dart
+          - test/**.dart
+      typesafe_firebase:schema_builder:
+        generate_for:
+          - test/**.dart
       typesafe_firebase:registration_builder:
         enabled: true
         options:
-          input_pattern: "example/**.model_builder.g.part"
-          output_path: "example/models.g.dart"
+          input_pattern: "test/firestore/**.model_builder.g.part"
+          output_path: "test/firestore/register_models.g.dart"
       mockito|mockBuilder:
         generate_for:
           - test/**_test.dart 
