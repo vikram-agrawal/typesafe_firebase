@@ -16,7 +16,7 @@ Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
 // ModelGenerator
 // **************************************************************************
 
-//IMPORT: examples/functions_example.dart
+//IMPORT: example/functions_example.dart
 //==BaseModel.register<UserProfile>(
 //==  toJson: UserProfileToJson,
 //==  fromJson: UserProfileFromJson,
