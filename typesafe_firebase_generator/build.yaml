@@ -6,12 +6,12 @@ builders:
     auto_apply: dependents
     build_to: cache
     applies_builders: ["source_gen|combining_builder"]
-  # schema_builder:
-  #   import: "package:typesafe_firebase_generator/firestore/builder.dart"
-  #   builder_factories: ["schemaBuilder"]
-  #   build_extensions: {".dart": [".schema_builder.g.part"]}
-  #   auto_apply: dependents
-  #   build_to: cache
+  schema_builder:
+    import: "package:typesafe_firebase_generator/typesafe_firebase_generator.dart"
+    builder_factories: ["schemaBuilder"]
+    build_extensions: {".dart": [".schema_builder.g.part"]}
+    auto_apply: dependents
+    build_to: cache
   registration_builder:
     import: "package:typesafe_firebase_generator/typesafe_firebase_generator.dart"
     builder_factories: ["registrationBuilder"]

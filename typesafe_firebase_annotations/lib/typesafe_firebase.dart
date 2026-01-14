@@ -8,5 +8,4 @@ export 'package:typesafe_firebase/auth/firebase_auth.dart' show FirebaseAuthServ
 export 'package:typesafe_firebase/functions/firebase_functions.dart' show FirebaseFunctionsService;
 
 // Forestore
-export 'package:typesafe_firebase/firestore/annotation.dart' show FirestoreService;
 export 'package:typesafe_firebase/firestore/base.dart' show $FirestoreDb, $Collection, $Document;

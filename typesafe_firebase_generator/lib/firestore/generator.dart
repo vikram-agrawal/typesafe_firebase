@@ -3,7 +3,7 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:path/path.dart' as p;
-import 'package:typesafe_firebase/typesafe_firebase.dart';
+import 'package:typesafe_firebase/firestore.dart';
 
 class _DocumentClass {
   final String _name;
