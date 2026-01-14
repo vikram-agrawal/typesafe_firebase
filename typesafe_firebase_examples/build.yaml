@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      typesafe_firebase_generator:registration_builder:
+        enabled: true
+          

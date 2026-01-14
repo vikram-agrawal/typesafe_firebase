@@ -1,0 +1,5 @@
+dependency_overrides:
+  typesafe_firebase:
+    path: ../typesafe_firebase_annotations
+  typesafe_firebase_generator:
+    path: ../typesafe_firebase_generator

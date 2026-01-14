@@ -5,6 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "typesafe_firebase_examples (Chrome)",
+            "request": "launch",
+            "type": "dart",
+            "program": "typesafe_firebase_examples/lib/main.dart",
+            "args": [
+                "-d",
+                "chrome",
+                "--web-port",
+                "8080"
+            ],
+            "flutterMode": "debug"
+        },
+        {
             "name": "typesafe_firebase",
             "request": "launch",
             "type": "dart"

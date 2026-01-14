@@ -1,0 +1,3 @@
+dependency_overrides:
+  typesafe_firebase:
+    path: ../typesafe_firebase_annotations
