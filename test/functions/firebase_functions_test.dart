@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:typesafe_firebase/firebase/firebase_provider.dart';
-import 'package:typesafe_firebase/functions/common_models.dart';
+import 'package:typesafe_firebase/models/common_models.dart';
 import 'package:typesafe_firebase/functions/firebase_functions.dart';
-import 'package:typesafe_firebase/functions/register_models.dart';
+import 'package:typesafe_firebase/models/register_models.dart';
 import 'package:mockito/annotations.dart';
 
 import '../mocks/functions/firebase_functions_test.mocks.dart';

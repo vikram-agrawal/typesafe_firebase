@@ -7,6 +7,6 @@ import 'package:typesafe_firebase/firebase/firebase_provider.dart';
 class FirebaseAuthService {
   /// Returns `true` if a user is currently signed into the application.
   static bool get isUserLoggedIn {
-    return FirebaseProvider.auth.currentUser != null;
+    return FirebaseProvider.auth().currentUser != null;
   }
 }

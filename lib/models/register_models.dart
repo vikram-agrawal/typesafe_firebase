@@ -1,5 +1,5 @@
-import "package:typesafe_firebase/functions/base_model.dart";
-import "package:typesafe_firebase/functions/common_models.dart";
+import "package:typesafe_firebase/models/base_model.dart";
+import "package:typesafe_firebase/models/common_models.dart";
 
 /// Registers the core data transfer objects (DTOs) with the [BaseModel] registry.
 ///

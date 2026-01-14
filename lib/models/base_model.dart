@@ -47,7 +47,7 @@ abstract class BaseModel {
   /// specifically typed for [T].
   ///
   /// Throws an [Exception] if the type [T] has not been registered with [BaseModel].
-  static Converter<T>? getConverter<T>() {
+  static Converter<T> getConverter<T>() {
     final c = _converter[T];
 
     return c == null

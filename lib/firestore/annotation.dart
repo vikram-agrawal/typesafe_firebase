@@ -12,7 +12,7 @@ class _DocumentClass {
 
   _DocumentClass(this._name);
 
-  void setType(SimpleIdentifier type) {
+  void _setType(SimpleIdentifier type) {
     _type = type;
   }
 
@@ -26,17 +26,24 @@ class _DocumentClass {
 
   void generateClassCode(StringBuffer buffer, String outputPath) {
     if (_type == null) {
-      buffer.writeln("class $_name {");
+      buffer.writeln("class $_name extends \$FirestoreDb {");
     } else {
       buffer.writeln(
         "class \$${_name}Doc extends \$Document<${_type.toString()}> {",
       );
+      buffer.writeln("  \$${_name}Doc(super.id, super.collection);");
     }
+
+    buffer.writeln();
+
     for (var sub in _subCollections.entries) {
       buffer.writeln("  // ignore: non_constant_identifier_names");
-      buffer.writeln(
-        "  final ${sub.key} = \$Collection<\$${sub.key}Doc>(\$${sub.key}Doc.new);",
+      buffer.write(
+        "  late final ${sub.key} = \$Collection<\$${sub.key}Doc, ${sub.value._type}>('${sub.key}', \$${sub.key}Doc.new, ",
       );
+      buffer.write(_type == null ? "this, null" : "null, this");
+      buffer.writeln(");");
+
       buffer.writeln();
     }
     buffer.writeln("}");
@@ -68,8 +75,6 @@ class SchemaGenerator extends GeneratorForAnnotation<FirestoreService> {
     }
 
     final buffer = StringBuffer();
-
-    buffer.writeln("import '';");
 
     final path = p.dirname(buildStep.inputId.path);
 
@@ -123,7 +128,7 @@ class SchemaGenerator extends GeneratorForAnnotation<FirestoreService> {
           final value = field.expression;
 
           if (name == 'type') {
-            doc.setType(value as SimpleIdentifier);
+            doc._setType(value as SimpleIdentifier);
           } else if (name == 'subCollections') {
             _parseExpression(value, docClass, className);
           } else {

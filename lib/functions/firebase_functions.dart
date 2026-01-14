@@ -1,7 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:typesafe_firebase/auth/firebase_auth.dart';
 import 'package:typesafe_firebase/firebase/firebase_provider.dart';
-import 'package:typesafe_firebase/functions/base_model.dart';
+import 'package:typesafe_firebase/models/base_model.dart';
 
 /// An abstract service that provides a typesafe interface for calling Firebase Cloud Functions.
 ///
@@ -16,9 +16,9 @@ abstract class FirebaseFunctionsService {
   ///
   /// The [prefix] is an optional string prepended to all function paths
   /// created by this service instance.
-  FirebaseFunctionsService({String prefix = ""}) {
+  FirebaseFunctionsService({String prefix = "", String? region}) {
     _prefix = prefix;
-    _functions = FirebaseProvider.functions;
+    _functions = FirebaseProvider.functions(region);
   }
 
   /// Creates a typesafe callable function that handles network communication.
@@ -53,10 +53,10 @@ abstract class FirebaseFunctionsService {
         final HttpsCallable callable = _functions.httpsCallable(
           "$_prefix$path",
         );
-        final reqJson = BaseModel.getConverter<RequestT>()!.toJson(req);
+        final reqJson = BaseModel.getConverter<RequestT>().toJson(req);
         final HttpsCallableResult result = await callable.call(reqJson);
 
-        return BaseModel.getConverter<ResponseT>()!.fromJson(result.data);
+        return BaseModel.getConverter<ResponseT>().fromJson(result.data);
       } on FirebaseFunctionsException catch (e) {
         if (e.code == "unauthenticated") {
           throw Exception("Firebase error [${e.code}]: ${e.message}");

@@ -1,4 +1,3 @@
-import 'package:typesafe_firebase/firestore/annotation.dart';
 import 'package:typesafe_firebase/typesafe_firebase.dart';
 
 import 'models.dart';

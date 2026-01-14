@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:typesafe_firebase/functions/annotation.dart';
-import 'package:typesafe_firebase/functions/base_model.dart';
+import 'package:typesafe_firebase/models/base_model.dart';
 
 /// A data transfer object representing a null or empty response.
 @Model()

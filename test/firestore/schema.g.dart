@@ -6,34 +6,71 @@ part of 'schema.dart';
 // SchemaGenerator
 // **************************************************************************
 
-class UserClientStore {
+class UserClientStore extends $FirestoreDb {
   // ignore: non_constant_identifier_names
-  final UserProfiles = $Collection<$UserProfilesDoc>($UserProfilesDoc.new);
+  late final UserProfiles = $Collection<$UserProfilesDoc, UserProfile>(
+    'UserProfiles',
+    $UserProfilesDoc.new,
+    this,
+    null,
+  );
 
   // ignore: non_constant_identifier_names
-  final Inventory = $Collection<$InventoryDoc>($InventoryDoc.new);
+  late final Inventory = $Collection<$InventoryDoc, InventoryItem>(
+    'Inventory',
+    $InventoryDoc.new,
+    this,
+    null,
+  );
 }
 
 class $UserProfilesDoc extends $Document<UserProfile> {
+  $UserProfilesDoc(super.id, super.collection);
+
   // ignore: non_constant_identifier_names
-  final AuditTrails = $Collection<$AuditTrailsDoc>($AuditTrailsDoc.new);
+  late final AuditTrails = $Collection<$AuditTrailsDoc, UserProfile>(
+    'AuditTrails',
+    $AuditTrailsDoc.new,
+    null,
+    this,
+  );
 }
 
-class $AuditTrailsDoc extends $Document<UserProfile> {}
+class $AuditTrailsDoc extends $Document<UserProfile> {
+  $AuditTrailsDoc(super.id, super.collection);
+}
 
 class $InventoryDoc extends $Document<InventoryItem> {
+  $InventoryDoc(super.id, super.collection);
+
   // ignore: non_constant_identifier_names
-  final Packets = $Collection<$PacketsDoc>($PacketsDoc.new);
+  late final Packets = $Collection<$PacketsDoc, Packet>(
+    'Packets',
+    $PacketsDoc.new,
+    null,
+    this,
+  );
 }
 
 class $PacketsDoc extends $Document<Packet> {
+  $PacketsDoc(super.id, super.collection);
+
   // ignore: non_constant_identifier_names
-  final Transactions = $Collection<$TransactionsDoc>($TransactionsDoc.new);
+  late final Transactions = $Collection<$TransactionsDoc, Transaction>(
+    'Transactions',
+    $TransactionsDoc.new,
+    null,
+    this,
+  );
 }
 
 class $TransactionsDoc extends $Document<Transaction> {
+  $TransactionsDoc(super.id, super.collection);
+
   // ignore: non_constant_identifier_names
-  final Id = $Collection<$IdDoc>($IdDoc.new);
+  late final Id = $Collection<$IdDoc, StringData>('Id', $IdDoc.new, null, this);
 }
 
-class $IdDoc extends $Document<StringData> {}
+class $IdDoc extends $Document<StringData> {
+  $IdDoc(super.id, super.collection);
+}
