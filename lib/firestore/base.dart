@@ -8,7 +8,17 @@ class $Collection<T> {
     return creator(); // Calls the passed constructor
   }
 
-  T call(String id) {
+  T operator [](String id) {
     return createInstance();
+  }
+}
+
+class $Document<T> {
+  Future<bool> exists() async {
+    return true;
+  }
+
+  Future<T> get data async {
+    return {} as T;
   }
 }

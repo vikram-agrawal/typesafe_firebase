@@ -2,6 +2,46 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:path/path.dart' as p;
+
+class _DocumentClass {
+  final String _name;
+  SimpleIdentifier? _type;
+  final Map<String, _DocumentClass> _subCollections =
+      <String, _DocumentClass>{};
+
+  _DocumentClass(this._name);
+
+  void setType(SimpleIdentifier type) {
+    _type = type;
+  }
+
+  void addSubCollection(_DocumentClass doc) {
+    _subCollections[doc._name] = doc;
+  }
+
+  _DocumentClass? getSubCollection(String name) {
+    return _subCollections[name];
+  }
+
+  void generateClassCode(StringBuffer buffer, String outputPath) {
+    if (_type == null) {
+      buffer.writeln("class $_name {");
+    } else {
+      buffer.writeln(
+        "class \$${_name}Doc extends \$Document<${_type.toString()}> {",
+      );
+    }
+    for (var sub in _subCollections.entries) {
+      buffer.writeln("  // ignore: non_constant_identifier_names");
+      buffer.writeln(
+        "  final ${sub.key} = \$Collection<\$${sub.key}Doc>(\$${sub.key}Doc.new);",
+      );
+      buffer.writeln();
+    }
+    buffer.writeln("}");
+  }
+}
 
 class FirestoreService {
   const FirestoreService();
@@ -14,6 +54,8 @@ class SchemaGenerator extends GeneratorForAnnotation<FirestoreService> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
+    final Map<String, _DocumentClass> docClass = <String, _DocumentClass>{};
+
     if (element is! TopLevelVariableElement) return '';
 
     // Get the AST node for the variable declaration
@@ -26,50 +68,73 @@ class SchemaGenerator extends GeneratorForAnnotation<FirestoreService> {
     }
 
     final buffer = StringBuffer();
-    buffer.writeln('class ${element.name?.replaceFirst("Schema", "")}Store {');
+
+    buffer.writeln("import '';");
+
+    final path = p.dirname(buildStep.inputId.path);
+
+    var className = "${element.name?.replaceFirst("Schema", "")}Store";
+    className = className[0].toUpperCase() + className.substring(1);
 
     // Start recursive processing of the initializer
-    _parseExpression(astNode.initializer!, buffer, indent: '  ');
+    docClass[className] = _DocumentClass(className);
+    _parseExpression(astNode.initializer!, docClass, className);
 
-    buffer.writeln('}');
+    for (var doc in docClass.entries) {
+      doc.value.generateClassCode(buffer, path);
+      buffer.writeln();
+    }
     return buffer.toString();
   }
 
   void _parseExpression(
     Expression expr,
-    StringBuffer buffer, {
-    String indent = '',
-  }) {
+    Map<String, _DocumentClass> docClass,
+    String className,
+  ) {
     // Handle the Top-Level Map and subCollections Map
     if (expr is SetOrMapLiteral && expr.isMap) {
+      var doc = docClass[className]!;
       for (var element in expr.elements) {
         if (element is MapLiteralEntry) {
           final key = element.key
               .toString()
               .replaceAll("'", "")
               .replaceAll('"', "");
-          buffer.writeln(
-            '${indent}final $key = \$Collection<\$${key}Doc>(\$${key}Doc.new);',
-          );
-          _parseExpression(element.value, buffer, indent: '$indent  ');
+          var subCol = docClass[key];
+          if (subCol == null) {
+            subCol = _DocumentClass(key);
+            docClass[key] = subCol;
+          }
+
+          doc.addSubCollection(subCol);
+          _parseExpression(element.value, docClass, key);
+        } else {
+          throw Exception("Invalid Schema.");
         }
       }
     }
     // Handle the Records: (type: UserProfile, subCollections: {...})
     else if (expr is RecordLiteral) {
       for (var field in expr.fields) {
+        var doc = docClass[className]!;
         if (field is NamedExpression) {
           final name = field.name.label.name;
           final value = field.expression;
 
           if (name == 'type') {
-            buffer.writeln('// ${indent}Type: ${value.toString()}');
+            doc.setType(value as SimpleIdentifier);
           } else if (name == 'subCollections') {
-            buffer.writeln('// ${indent}SubCollections:');
-            _parseExpression(value, buffer, indent: '$indent  ');
+            _parseExpression(value, docClass, className);
+          } else {
+            throw Exception("Invalid Schema.");
           }
+        } else {
+          throw Exception("Invalid Schema.");
         }
       }
+    } else {
+      throw Exception("Invalid Schema.");
     }
   }
 }
