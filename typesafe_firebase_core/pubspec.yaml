@@ -1,7 +1,7 @@
 name: typesafe_firebase_core
 description: "A flutter library providing a type safe wrapper on firebase."
-version: 0.0.1
-repository: https://github.com/vikram-agrawal/typesafe_firebase
+version: 0.0.2
+repository: https://github.com/vikram-agrawal/typesafe_firebase/tree/main/typesafe_firebase_core
 
 environment:
   sdk: ^3.10.4

@@ -2,14 +2,25 @@ A library to put wrapper arround firebase to access it in typesafe elegant way.
 
 
 ## Usage
+Refer [Github Repo](https://github.com/vikram-agrawal/typesafe_firebase_examples) for example usage.
 
-Add in build.yaml:
+Add to build.yaml
 ```yaml
 targets:
   $default:
     builders:
-      typesafe_firebase:registration_builder:
+      typesafe_firebase_generator:registration_builder:
         enabled: true
+```
+
+pubspec.yaml
+```yaml
+dependencies:
+  typesafe_firebase_core: ^0.0.2
+
+dev_dependencies:
+  build_runner: ^2.10.4
+  typesafe_firebase_generator: ^0.0.2
 ```
 
 ```dart
@@ -18,21 +29,11 @@ class UserProfile extends BaseModel {
   String uid = "";
 }
 
-class ClientApi extends FirebaseFunctionsService {
-  ClientApi() : super(prefix: "user");
-
-  // Will call /user/load firebase function.
-  late final loadUser = createFunction<IntData, UserProfile>("/load");
-}
-
-class Run {
-  static void main() async {
-    FirebaseProvider.setConfig(region: "asia-south1");
-    registerCommonModels();
-    registerAllModels();
-    UserProfile result = await ClientApi().loadUser(IntData(5));
-    print(result.uid);
-  }
-}
-
+@FirestoreService("UserDataStore")
+const userDataSchema = {
+  'UserProfiles': (
+    type: UserProfile,
+    subCollections: {'AuditTrail': (type: AuditTrailEntry)},
+  ),
+};
 ```

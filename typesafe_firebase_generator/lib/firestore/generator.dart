@@ -36,9 +36,9 @@ class _DocumentClass {
   void generateClassCode(StringBuffer buffer, String outputPath) {
     buffer.writeln("// ignore: camel_case_types");
     if (_type == null) {
-      buffer.writeln("class $_name extends \$FirestoreDb {");
+      buffer.writeln("final class $_name extends \$FirestoreDb {");
     } else {
-      buffer.writeln("class \$$_name\$Doc extends \$Document<${_type.toString()}> {");
+      buffer.writeln("final class \$$_name\$Doc extends \$Document<${_type.toString()}> {");
       buffer.writeln("  \$$_name\$Doc(super.id, super.collection);");
     }
 
@@ -49,7 +49,7 @@ class _DocumentClass {
       buffer.write(
         "  late final ${sub.value._key} = \$Collection<\$${sub.key}\$Doc, ${sub.value._type}>('${sub.value._key}', \$${sub.key}\$Doc.new, ",
       );
-      buffer.write(_type == null ? "this, null" : "null, this");
+      buffer.write(_type == null ? "firestoreDb: this" : "parentDoc: this");
       buffer.writeln(");");
 
       buffer.writeln();
