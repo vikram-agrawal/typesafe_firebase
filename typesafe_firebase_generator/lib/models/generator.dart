@@ -18,18 +18,16 @@ class ModelGenerator extends GeneratorForAnnotation<Model> {
     final path = buildStep.inputId.path.startsWith('lib/') ? buildStep.inputId.uri.toString() : buildStep.inputId.path;
 
     return """
-      //IMPORT: $path
-      //==BaseModel.register<$name>(
-      //==  toJson: ${name}ToJson,
-      //==  fromJson: ${name}FromJson,
-      //==);
+// IMPORT: $path
 
-      // ignore: constant_identifier_names
-      const ${name}FromJson = _\$${name}FromJson;
-
-      // ignore: constant_identifier_names
-      const ${name}ToJson = _\$${name}ToJson;
-      """;
+// ignore: non_constant_identifier_names
+void \$register_\$${name}_type() {
+  BaseModel.register<$name>(
+    toJson: _\$${name}ToJson,
+    fromJson: _\$${name}FromJson,
+  );
+}
+""";
   }
 }
 
@@ -44,8 +42,8 @@ class RegistrationBuilder implements Builder {
   final String outputPath;
 
   RegistrationBuilder(BuilderOptions options)
-    : inputPattern = options.config['input_pattern'] ?? 'lib/**/*.model_builder.g.part',
-      outputPath = options.config['output_path'] ?? 'lib/generated/models.g.dart';
+    : inputPattern = options.config['input_pattern'] ?? 'lib/**.model_builder.g.part',
+      outputPath = options.config['output_path'] ?? 'lib/models.g.dart';
 
   @override
   late final buildExtensions = {
@@ -65,8 +63,8 @@ class RegistrationBuilder implements Builder {
       final lines = content.split('\n');
 
       for (final line in lines) {
-        if (line.startsWith('//IMPORT: ')) {
-          var path = line.replaceFirst('//IMPORT: ', '');
+        if (line.startsWith('// IMPORT: ')) {
+          var path = line.replaceFirst('// IMPORT: ', '');
 
           // If it's a raw file path (outside lib), make it relative to the output file
           if (!path.startsWith('package:')) {
@@ -75,14 +73,17 @@ class RegistrationBuilder implements Builder {
             path = p.relative(path, from: outDir);
           }
           imports.add(path);
-        } else if (line.startsWith('//==')) {
-          registrations.add(line.trim().substring(4));
+        } else if (line.startsWith('void \$register_\$')) {
+          registrations.add(line.trim().substring(5).replaceAll(" {", ";"));
         }
       }
     }
 
     // Write file header
-    buffer.writeln('// GENERATED CODE - DO NOT MODIFY');
+    buffer.writeln('// ****************************************');
+    buffer.writeln('// *    GENERATED CODE - DO NOT MODIFY    *');
+    buffer.writeln('// ****************************************');
+    buffer.writeln();
     buffer.writeln('import "package:typesafe_firebase_core/models.dart";');
 
     // Write all model imports

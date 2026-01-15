@@ -1,9 +1,3 @@
-A library to put wrapper arround firebase firestore to access it in typesafe elegant way.
-
-
-## Usage
-Refer [Github Repo](https://github.com/vikram-agrawal/typesafe_firebase_examples) for example usage.
-
 ```dart
 @Model()
 class UserProfile extends BaseModel {

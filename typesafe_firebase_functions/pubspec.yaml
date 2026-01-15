@@ -1,7 +1,7 @@
 name: typesafe_firebase_functions
 description: "A flutter library providing a type safe wrapper on firebase."
-version: 0.0.1
-repository: https://github.com/vikram-agrawal/typesafe_firebase
+version: 0.0.2
+repository: https://github.com/vikram-agrawal/typesafe_firebase/tree/main/typesafe_firebase_functions
 
 environment:
   sdk: ^3.10.4
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   cloud_functions: ^6.0.5
-  typesafe_firebase_core: ^0.0.1
+  typesafe_firebase_core: ^0.0.2
 
 dev_dependencies:
   flutter_test:

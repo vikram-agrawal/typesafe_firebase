@@ -11,15 +11,33 @@ final class $Collection<T extends $Document<D>, D extends BaseModel> {
   final T Function(String id, $Collection<$Document<D>, D> collection) _creator;
 
   /// The underlying Firestore [CollectionReference].
-  final CollectionReference _collRef;
+  final CollectionReference<D> _collRef;
 
   /// Internal constructor used by the generator to initialize the collection chain.
-  $Collection(String name, this._creator, {$FirestoreDb? firebaseDb, $Document<BaseModel>? parentDoc})
-    : _collRef = parentDoc == null ? firebaseDb!._firestore.collection(name) : parentDoc._docRef.collection(name);
+  $Collection(String name, this._creator, {$FirestoreDb? firestoreDb, $Document<BaseModel>? parentDoc})
+    : _collRef = (parentDoc == null ? firestoreDb!._firestore.collection(name) : parentDoc._docRef.collection(name))
+          .withConverter<D>(fromFirestore: _fromFirestore, toFirestore: _toFirestore);
 
   /// Accesses a document by its [id] using the index operator.
   @useResult
   T operator [](String id) => _creator(id, this);
+
+  /// Adds a document to collection.
+  Future<T> add(D value, [String? id]) async {
+    if (id != null) {
+      await this[id].set(value);
+      return _creator(id, this);
+    } else {
+      final doc = await _collRef.add(value);
+      return _creator(doc.id, this);
+    }
+  }
+
+  static T _fromFirestore<T extends BaseModel>(DocumentSnapshot<Map<String, dynamic>> snapshot, _) =>
+      BaseModel.getConverter<T>().fromJson(snapshot.data()!);
+
+  static Map<String, Object?> _toFirestore<T extends BaseModel>(T value, _) =>
+      BaseModel.getConverter<T>().toJson(value);
 }
 
 /// An abstract base for type-safe Document proxies.
@@ -31,8 +49,7 @@ abstract base class $Document<T extends BaseModel> {
 
   /// Initializes the document proxy with a collection context and ID.
   @internal
-  $Document(String id, $Collection<$Document<T>, T> collection)
-    : _docRef = collection._collRef.doc(id).withConverter<T>(fromFirestore: _fromFirestore, toFirestore: _toFirestore);
+  $Document(String id, $Collection<$Document<T>, T> collection) : _docRef = collection._collRef.doc(id);
 
   /// Returns `true` if the document currently exists in Firestore.
   @useResult
@@ -55,17 +72,16 @@ abstract base class $Document<T extends BaseModel> {
     return data;
   }
 
+  @useResult
+  String get id {
+    return _docRef.id;
+  }
+
   /// Writes the provided [value] to this document location.
   Future<void> set(T value, [SetOptions? options]) => _docRef.set(value, options);
 
   /// Deletes the document from Firestore.
   Future<void> delete() => _docRef.delete();
-
-  static T _fromFirestore<T extends BaseModel>(DocumentSnapshot<Map<String, dynamic>> snapshot, _) =>
-      BaseModel.getConverter<T>().fromJson(snapshot.data()!);
-
-  static Map<String, Object?> _toFirestore<T extends BaseModel>(T value, _) =>
-      BaseModel.getConverter<T>().toJson(value);
 }
 
 /// The root entry point for a generated Firestore service.
