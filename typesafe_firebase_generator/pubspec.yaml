@@ -1,6 +1,6 @@
 name: typesafe_firebase_generator
 description: "A flutter library providing a type safe wrapper on firebase."
-version: 0.0.3
+version: 0.0.1
 repository: https://github.com/vikram-agrawal/typesafe_firebase
 
 environment:
