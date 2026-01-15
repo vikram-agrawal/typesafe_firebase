@@ -9,11 +9,11 @@ void main() {
     apiKey: 'APIKEY',
     appId: '1:2:web:3',
     messagingSenderId: '45432432',
-    projectId: 'demo-typesage-firebase',
-    storageBucket: 'demo-typesage-firebase.firebasestorage.app',
+    projectId: 'demo-no-project',
+    storageBucket: 'demo-no-project.firebasestorage.app',
   );
   Firebase.initializeApp(options: options);
-  FirebaseProvider.setConfig(emulatorIp: "localhost");
+  FirebaseProvider.setConfig(emulatorIp: "127.0.0.1");
   registerAllModels();
   runApp(const MyApp());
 }

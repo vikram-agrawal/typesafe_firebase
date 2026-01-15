@@ -11,9 +11,7 @@
             "program": "typesafe_firebase_examples/lib/main.dart",
             "args": [
                 "-d",
-                "chrome",
-                "--web-port",
-                "8080"
+                "chrome"
             ],
             "flutterMode": "debug"
         },
