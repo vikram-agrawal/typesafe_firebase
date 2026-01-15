@@ -3,8 +3,12 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:path/path.dart' as p;
-import 'package:typesafe_firebase/firestore.dart';
+import 'package:typesafe_firebase_core/annotations.dart';
 
+/// Represents a structure for a Firestore document or the root database.
+///
+/// This internal class tracks the relationship between collection keys,
+/// the Dart types associated with documents, and nested sub-collections.
 class _DocumentClass {
   final String _name;
   final String _key;
@@ -25,6 +29,10 @@ class _DocumentClass {
     return _subCollections[name];
   }
 
+  /// Generates the Dart code for the class representation of this document.
+  ///
+  /// The [buffer] is used to write the class definition, and [outputPath]
+  /// is used for determining relative imports if necessary.
   void generateClassCode(StringBuffer buffer, String outputPath) {
     buffer.writeln("// ignore: camel_case_types");
     if (_type == null) {
@@ -50,7 +58,15 @@ class _DocumentClass {
   }
 }
 
+/// A generator that produces type-safe Firestore accessors based on [FirestoreService] annotations.
+///
+/// It scans top-level variables defined as maps or records and builds a
+/// hierarchical representation of the Firestore database schema.
 class SchemaGenerator extends GeneratorForAnnotation<FirestoreService> {
+  /// Entry point for the code generation process.
+  ///
+  /// Extracts the schema from the annotated [element] and recursively
+  /// parses the initializer to build the document class tree.
   @override
   Future<String> generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) async {
     final className = annotation.read("className").stringValue;
@@ -82,6 +98,10 @@ class SchemaGenerator extends GeneratorForAnnotation<FirestoreService> {
     return buffer.toString();
   }
 
+  /// Recursively parses Dart [Expression]s to identify Firestore schema definitions.
+  ///
+  /// Handles [SetOrMapLiteral] for collection structures and [RecordLiteral]
+  /// for document definitions (type and sub-collections).
   void _parseExpression(Expression expr, Map<String, _DocumentClass> docClass, String className) {
     // Handle the Top-Level Map and subCollections Map
     if (expr is SetOrMapLiteral && expr.isMap) {

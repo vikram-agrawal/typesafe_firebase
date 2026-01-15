@@ -1,0 +1,3 @@
+dependency_overrides:
+  typesafe_firebase_core:
+    path: ../typesafe_firebase_core

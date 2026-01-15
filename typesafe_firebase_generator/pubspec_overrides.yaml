@@ -1,3 +1,5 @@
 dependency_overrides:
-  typesafe_firebase:
-    path: ../typesafe_firebase_library
+  typesafe_firebase_core:
+    path: ../typesafe_firebase_core
+  typesafe_firebase_firestore:
+    path: ../typesafe_firebase_firestore

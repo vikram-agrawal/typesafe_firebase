@@ -3,7 +3,7 @@ import 'package:build/build.dart';
 import 'package:glob/glob.dart';
 import 'package:path/path.dart' as p;
 import 'package:source_gen/source_gen.dart';
-import 'package:typesafe_firebase/models.dart';
+import 'package:typesafe_firebase_core/annotations.dart';
 
 /// A generator that produces registration snippets and serialization aliases
 /// for classes annotated with [Model].
@@ -16,8 +16,6 @@ class ModelGenerator extends GeneratorForAnnotation<Model> {
     final name = element.name;
     // Get the import path relative to the lib/ folder
     final path = buildStep.inputId.path.startsWith('lib/') ? buildStep.inputId.uri.toString() : buildStep.inputId.path;
-
-    print("==== Path: $path");
 
     return """
       //IMPORT: $path
@@ -85,7 +83,7 @@ class RegistrationBuilder implements Builder {
 
     // Write file header
     buffer.writeln('// GENERATED CODE - DO NOT MODIFY');
-    buffer.writeln('import "package:typesafe_firebase/models.dart";');
+    buffer.writeln('import "package:typesafe_firebase_core/models.dart";');
 
     // Write all model imports
     for (final path in imports) {
