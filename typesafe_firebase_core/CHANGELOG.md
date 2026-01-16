@@ -1,3 +1,7 @@
+## 0.0.3
+
+Exception type fot typesafe firebase.
+
 ## 0.0.2
 
 Examples.
