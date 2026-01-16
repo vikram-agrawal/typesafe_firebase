@@ -42,8 +42,8 @@ class RegistrationBuilder implements Builder {
   final String outputPath;
 
   RegistrationBuilder(BuilderOptions options)
-    : inputPattern = options.config['input_pattern'] ?? 'lib/**.model_builder.g.part',
-      outputPath = options.config['output_path'] ?? 'lib/models.g.dart';
+    : inputPattern = options.config['input_pattern'] ?? 'lib/**.model.g.dart',
+      outputPath = options.config['output_path'] ?? 'lib/register_models.g.dart';
 
   @override
   late final buildExtensions = {
@@ -53,11 +53,12 @@ class RegistrationBuilder implements Builder {
   @override
   Future<void> build(BuildStep buildStep) async {
     final buffer = StringBuffer();
-    final imports = <String>{};
-    final registrations = <String>[];
+    final imports = <String, String>{};
+    final registrations = <(String, String)>[];
 
     final parts = buildStep.findAssets(Glob(inputPattern));
 
+    int cnt = 0;
     await for (final asset in parts) {
       final content = await buildStep.readAsString(asset);
       final lines = content.split('\n');
@@ -72,9 +73,12 @@ class RegistrationBuilder implements Builder {
             final outDir = p.dirname(outputPath);
             path = p.relative(path, from: outDir);
           }
-          imports.add(path);
+          if (!imports.containsKey(path)) {
+            ++cnt;
+            imports[path] = "\$import$cnt";
+          }
         } else if (line.startsWith('void \$register_\$')) {
-          registrations.add(line.trim().substring(5).replaceAll(" {", ";"));
+          registrations.add(("\$import$cnt", line.trim().substring(5).replaceAll(" {", ";")));
         }
       }
     }
@@ -84,18 +88,18 @@ class RegistrationBuilder implements Builder {
     buffer.writeln('// *    GENERATED CODE - DO NOT MODIFY    *');
     buffer.writeln('// ****************************************');
     buffer.writeln();
-    buffer.writeln('import "package:typesafe_firebase_core/models.dart";');
+    buffer.writeln('import "package:typesafe_firebase_core/models.dart" as \$import0;');
 
     // Write all model imports
-    for (final path in imports) {
-      buffer.writeln('import "$path";');
+    for (final path in imports.entries) {
+      buffer.writeln("import '${path.key}' as ${path.value};");
     }
 
     buffer.writeln('\nvoid registerAllModels() {');
-    buffer.writeln("  registerCommonModels();");
+    buffer.writeln('  \$import0.registerCommonModels();');
     buffer.writeln();
     for (final reg in registrations) {
-      buffer.writeln('  $reg');
+      buffer.writeln("  ${reg.$1}.${reg.$2}");
     }
     buffer.writeln('}');
 

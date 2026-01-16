@@ -2,25 +2,25 @@ builders:
   model_builder:
     import: "package:typesafe_firebase_generator/typesafe_firebase_generator.dart"
     builder_factories: ["modelBuilder"]
-    build_extensions: {".dart": [".model_builder.g.part"]}
+    build_extensions: {".dart": [".model.g.dart"]}
     auto_apply: dependents
-    build_to: cache
+    build_to: source
     applies_builders: ["source_gen|combining_builder"]
   schema_builder:
     import: "package:typesafe_firebase_generator/typesafe_firebase_generator.dart"
     builder_factories: ["schemaBuilder"]
-    build_extensions: {".dart": [".schema_builder.g.part"]}
+    build_extensions: {".dart": [".schema.g.dart"]}
     auto_apply: dependents
-    build_to: cache
+    build_to: source
   registration_builder:
     import: "package:typesafe_firebase_generator/typesafe_firebase_generator.dart"
     builder_factories: ["registrationBuilder"]
-    build_extensions: {r"$package$": ["models.g.dart"]}
-    auto_apply: none
-    required_inputs: [".model_builder.g.part"]
+    build_extensions: {r"$package$": ["register_models.g.dart"]}
+    auto_apply: dependents
+    required_inputs: [".model.g.dart"]
     build_to: source
     defaults:
       options:
-        input_pattern: "lib/**/*.model_builder.g.part"
+        input_pattern: "lib/**.model.g.dart"
         output_path: "lib/register_models.g.dart"
 
