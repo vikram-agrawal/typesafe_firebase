@@ -1,6 +1,7 @@
 ## 0.0.3
 
-Exception type fot typesafe firebase.
+* Exception type for typesafe firebase.
+* TypeSafeStream
 
 ## 0.0.2
 
