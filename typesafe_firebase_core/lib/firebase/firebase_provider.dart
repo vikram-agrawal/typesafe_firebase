@@ -10,6 +10,8 @@ import 'package:meta/meta.dart';
 /// services like [FirebaseAuth], [FirebaseFunctions], and [FirebaseFirestore]
 /// are initialized correctly, supporting both production environments and local emulators.
 class FirebaseProvider {
+  static const _default = "(Default)";
+
   /// The specific [FirebaseApp] instance to use, if any.
   static FirebaseApp? _firebaseAppInstance;
 
@@ -41,7 +43,7 @@ class FirebaseProvider {
   }
 
   /// Internal cached instance of [FirebaseFunctions].
-  static FirebaseFunctions? _firebaseFunctionsInstance;
+  static final Map<String, FirebaseFunctions> _firebaseFunctionsInstance = <String, FirebaseFunctions>{};
 
   /// Returns the configured [FirebaseFunctions] instance.
   ///
@@ -49,21 +51,23 @@ class FirebaseProvider {
   /// provided in [setConfig]. If an emulator IP was configured, it
   /// automatically points to the local Cloud Functions emulator on port 5001.
   static FirebaseFunctions functions(String? region) {
-    if (_firebaseFunctionsInstance == null) {
-      _firebaseFunctionsInstance = _firebaseAppInstance == null && region == null
+    FirebaseFunctions? functions = _firebaseFunctionsInstance[region ?? _default];
+    if (functions == null) {
+      functions = _firebaseAppInstance == null && region == null
           ? FirebaseFunctions.instance
           : FirebaseFunctions.instanceFor(app: _firebaseApp, region: region);
       if (_emulatorIp != null && _emulatorIp!.isNotEmpty) {
-        _firebaseFunctionsInstance!.useFunctionsEmulator(_emulatorIp!, 5001);
+        functions.useFunctionsEmulator(_emulatorIp!, 5001);
       }
+      _firebaseFunctionsInstance[region ?? _default] = functions;
     }
-    return _firebaseFunctionsInstance!;
+    return functions;
   }
 
   /// Allows injecting a mock [FirebaseFunctions] instance for testing.
   @visibleForTesting
   static set functionsForTesting(FirebaseFunctions instance) {
-    _firebaseFunctionsInstance = instance;
+    _firebaseFunctionsInstance[_default] = instance;
   }
 
   /// Internal cached instance of [FirebaseAuth].
@@ -93,7 +97,7 @@ class FirebaseProvider {
   }
 
   /// Internal cached instance of [FirebaseFirestore].
-  static FirebaseFirestore? _firestoreInstance;
+  static final Map<String, FirebaseFirestore> _firestoreInstance = <String, FirebaseFirestore>{};
 
   /// Returns the configured [FirebaseFirestore] instance.
   ///
@@ -103,15 +107,17 @@ class FirebaseProvider {
   /// If an [emulatorIp] was provided in [setConfig], the instance will be
   /// configured to use the local Firestore emulator on port 8080.
   static FirebaseFirestore firestore({String? databaseId}) {
-    if (_firestoreInstance == null) {
-      _firestoreInstance = (_firebaseAppInstance == null && databaseId == null)
+    FirebaseFirestore? firestore = _firestoreInstance[databaseId ?? _default];
+    if (firestore == null) {
+      firestore = (_firebaseAppInstance == null && databaseId == null)
           ? FirebaseFirestore.instance
           : FirebaseFirestore.instanceFor(app: _firebaseApp, databaseId: databaseId);
       if (_emulatorIp != null && _emulatorIp!.isNotEmpty) {
-        _firestoreInstance!.useFirestoreEmulator(_emulatorIp!, 8080);
+        firestore.useFirestoreEmulator(_emulatorIp!, 8080);
       }
+      _firestoreInstance[databaseId ?? _default] = firestore;
     }
 
-    return _firestoreInstance!;
+    return firestore;
   }
 }

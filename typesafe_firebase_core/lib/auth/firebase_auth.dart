@@ -9,4 +9,9 @@ class FirebaseAuthService {
   static bool get isUserLoggedIn {
     return FirebaseProvider.auth().currentUser != null;
   }
+
+  /// Returns `true` if the current session is an anonymous guest account.
+  static bool get isAnonymous {
+    return FirebaseProvider.auth().currentUser?.isAnonymous ?? true;
+  }
 }
