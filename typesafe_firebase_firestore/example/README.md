@@ -1,3 +1,5 @@
+### Base
+
 ```dart
 @Model()
 class UserProfile extends BaseModel {
@@ -12,7 +14,11 @@ const userDataSchema = {
     subCollections: {'AuditTrail': (type: AuditTrailEntry)},
   ),
 };
+```
 
+### Add Document
+
+```dart
 Future<void> addUser(String uid, String name) async {
   final UserDataStore store = UserDataStore();
   final UserProfile newUser = UserProfile();
@@ -32,7 +38,11 @@ Future<void> addUser(String uid, String name) async {
   // Add document with specified id
   final entryDoc = await doc.AuditTrail.add(entry, "1");
 }
+```
 
+### Get Document
+
+```dart
 Future<UserProfile> getUser(String docId) async {
   final UserDataStore store = UserDataStore();
   UserProfile user = await store.UserProfiles[docId].data;
@@ -40,4 +50,50 @@ Future<UserProfile> getUser(String docId) async {
 
   return user;
 }
+```
+
+### Get all Documents from collection
+
+```dart
+Future<String> getAuditTrail(String docId) async {
+  final UserDataStore store = UserDataStore();
+  final userDoc = store.UserProfiles[docId];
+  UserProfile user = await userDoc.data;
+
+  String trail = "";
+  await for (var log in userDoc.AuditTrail.getAll()) {
+    trail += "${user.name} - ${log.id}: ${(await log.data).modifiedAt}\n";
+  }
+
+  return trail;
+}
+```
+
+### Listen to doc changes
+
+```dart
+Stream<UserProfile>? _changeStream;
+
+void _listenChanges(String docId) {
+  setState(() {
+    _changeStream = _store.UserProfiles[docId].changeEvents;
+  });
+}
+
+StreamBuilder(
+  stream: _changeStream,
+  builder: (context, snapshot) {
+    if (_changeStream == null) {
+      return Text("Tap button to load data");
+    }
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return CircularProgressIndicator();
+    }
+    if (snapshot.hasError) return Text("Error: ${snapshot.error}");
+
+    _names += "${snapshot.data!.name}\n";
+
+    return Text(_names);
+  },
+)
 ```

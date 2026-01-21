@@ -2,7 +2,8 @@ A library to put wrapper arround firebase firestore to access it in typesafe ele
 
 
 ## Usage
-Refer [Github Repo](https://github.com/vikram-agrawal/typesafe_firebase_examples) for example usage.
+Refer [Examples](https://pub.dev/packages/typesafe_firebase_firestore/example) for more usage.
+Refer [Github Repo](https://github.com/vikram-agrawal/typesafe_firebase_examples) for detailed example usage.
 
 ```dart
 @Model()
