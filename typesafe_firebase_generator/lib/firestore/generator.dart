@@ -39,7 +39,7 @@ class _DocumentClass {
       buffer.writeln("final class $_name extends \$FirestoreDb {");
     } else {
       buffer.writeln("final class \$$_name\$Doc extends \$Document<${_type.toString()}> {");
-      buffer.writeln("  \$$_name\$Doc(super.id, super.collection);");
+      buffer.writeln("  \$$_name\$Doc(super.id, super.collection, {super.data});");
     }
 
     buffer.writeln();

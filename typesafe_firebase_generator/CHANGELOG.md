@@ -1,3 +1,8 @@
+## 0.0.4
+
+* Support for getAll() for firestore collections.
+* Add changeEvents stream to listen to changes to documents.
+
 ## 0.0.3
 
 * Auto apply registration_builder.
