@@ -8,7 +8,7 @@ import 'package:typesafe_firebase_core/annotations.dart';
 /// A generator that produces registration snippets and serialization aliases
 /// for classes annotated with [Model].
 ///
-/// This generator produces `.g.part` files containing metadata that the
+/// This generator produces `.model.g.part` files containing metadata that the
 /// [RegistrationBuilder] later collects to build the final registration file.
 class ModelGenerator extends GeneratorForAnnotation<Model> {
   @override
